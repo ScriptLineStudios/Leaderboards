@@ -31,10 +31,24 @@ def landing_page():
     db.session.commit()
     return "<Response [200]>"
 
+def Reverse(tuples):
+    new_tup = tuples[::-1]
+    return new_tup
+
 @app.route('/leaderboard/<name>')
 def leaderboard(name):
     leaderboard = Leaderboard.query.filter_by(name=name).first()
-    return render_template("leaderboard.html", data=leaderboard.data.split(",")[:-1], scores=leaderboard.scores.split(",")[:-1])
+
+    scores = [int(score) for score in leaderboard.scores.split(",")[:-1]]
+    data = leaderboard.data.split(",")[:-1]
+
+    if scores and data != []:
+        list1, list2 = zip(*sorted(zip(scores, data)))
+        list1, list2 = Reverse(list1),Reverse(list2)
+    else:
+        list1, list2 = [], []
+
+    return render_template("leaderboard.html", data=list2, scores=list1)
 
 if __name__ == '__main__':
     app.run(debug=True)
