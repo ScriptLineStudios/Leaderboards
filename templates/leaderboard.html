@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+    <style>
+        .center {
+           text-align: center;
+           }
+     </style>
+    
+    <body>
+        <div class="center">
+            <h1>Leaderboard</h1>
+            {% for line in data %}
+                <p>{{  loop.index0  }}. {{ line }} {{ scores[loop.index0] }}</p>
+            {% endfor %}
+        </div>
+    </body>
+</html>
