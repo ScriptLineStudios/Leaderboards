@@ -16,20 +16,21 @@ class Leaderboard(db.Model):
     def __repr__(self):
         return f"Leaderboard('{self.name}', '{self.data}', '{self.api_key}', '{self.scores}')"
 
-@app.route('/add')
+@app.route('/add', methods=['POST'])
 def landing_page():
-    key = request.args['apiKey']
-    data = request.args['data']
-    scores = request.args['scores']
-    leaderboard = Leaderboard.query.filter_by(api_key=key).first()
-    leaderboard.data += data
-    leaderboard.data += ","
+    if request.method == 'POST':
+        key = request.args['apiKey']
+        data = request.args['data']
+        scores = request.args['scores']
+        leaderboard = Leaderboard.query.filter_by(api_key=key).first()
+        leaderboard.data += data
+        leaderboard.data += ","
 
-    leaderboard.scores += scores
-    leaderboard.scores += ","
+        leaderboard.scores += scores
+        leaderboard.scores += ","
 
-    db.session.commit()
-    return "<Response [200]>"
+        db.session.commit()
+        return "<Response [200]>"
 
 def Reverse(tuples):
     new_tup = tuples[::-1]
@@ -53,4 +54,3 @@ def leaderboard(name):
 if __name__ == '__main__':
     app.run(debug=True)
 
-    
