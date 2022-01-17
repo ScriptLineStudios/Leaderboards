@@ -1,2 +1,2 @@
-# Leaderboards
+#Simple Leaderboard API
  
