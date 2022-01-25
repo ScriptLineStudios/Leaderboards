@@ -16,9 +16,9 @@ class Leaderboard(db.Model):
     def __repr__(self):
         return f"Leaderboard('{self.name}', '{self.data}', '{self.api_key}', '{self.scores}')"
 
-@app.route('/add', methods=['POST'])
+@app.route('/add', methods=["POST"])
 def landing_page():
-    if request.method == 'POST':
+    if request.method == "POST":
         key = request.args['apiKey']
         data = request.args['data']
         scores = request.args['scores']
@@ -51,6 +51,5 @@ def leaderboard(name):
 
     return render_template("leaderboard.html", data=list2, scores=list1)
 
-if __name__ == '__main__':
-    app.run(debug=True)
+
 
