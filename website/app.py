@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, abort
 from flask_sqlalchemy import SQLAlchemy
 import secrets
 import random
@@ -47,15 +47,21 @@ def landing_page():
         data = request.args['data']
         scores = request.args['scores']
         leaderboard = Leaderboard.query.filter_by(api_key=key).first()
-        leaderboard.data += data
-        leaderboard.data += ","
 
-        leaderboard.scores += scores
-        leaderboard.scores += ","
+        try:
+            if type(int(scores)) == int or type(float(scores)) == float:        
+                leaderboard.data += data
+                leaderboard.data += ","
 
-        db.session.commit()
+                leaderboard.scores += scores
+                leaderboard.scores += ","
 
-        return "<Response [200]>"
+                db.session.commit()
+
+                return "<Response [200]>"
+
+        except ValueError:
+            abort(400, "Bad request")
 
 def Reverse(tuples):
     new_tup = tuples[::-1]
@@ -65,7 +71,7 @@ def Reverse(tuples):
 def leaderboard(name):
     leaderboard = Leaderboard.query.filter_by(name=name).first()
 
-    scores = [int(score) for score in leaderboard.scores.split(",")[:-1]]
+    scores = [float(score) for score in leaderboard.scores.split(",")[:-1]]
     data = leaderboard.data.split(",")[:-1]
 
     if scores and data != []:
