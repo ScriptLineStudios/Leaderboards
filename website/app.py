@@ -4,9 +4,6 @@ import secrets
 import random
 import time
 
-times = []
-calls = []
-
 app = Flask(__name__)
 db_name = 'sockmarket.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_name
@@ -49,11 +46,10 @@ def landing_page():
         leaderboard = Leaderboard.query.filter_by(api_key=key).first()
 
         try:
-            if type(int(scores)) == int or type(float(scores)) == float:        
                 leaderboard.data += data
                 leaderboard.data += ","
 
-                leaderboard.scores += scores
+                leaderboard.scores += str(float(scores))
                 leaderboard.scores += ","
 
                 db.session.commit()
