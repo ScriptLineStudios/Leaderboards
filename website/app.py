@@ -37,7 +37,7 @@ def create_new_leaderboard():
             return f"Your api key is {api_key}"
 
 
-@app.route('/add', methods=["POST"])
+@app.route('/add', methods=["GET", "POST"])
 def landing_page():
     if request.method == "POST":
         key = request.args['apiKey']
@@ -58,6 +58,13 @@ def landing_page():
 
         except ValueError:
             abort(400, "Bad request")
+
+    if request.method == "GET":
+        key = request.args['apiKey']
+        leaderboard = Leaderboard.query.filter_by(api_key=key).first()
+
+        return str(leaderboard.data) + "|" + str(leaderboard.scores)
+
 
 def Reverse(tuples):
     new_tup = tuples[::-1]
