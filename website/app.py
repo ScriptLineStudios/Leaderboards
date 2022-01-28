@@ -4,6 +4,9 @@ import secrets
 import random
 import time
 
+times = []
+calls = []
+
 app = Flask(__name__)
 db_name = 'sockmarket.db'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + db_name
@@ -27,10 +30,14 @@ def home():
 def create_new_leaderboard():
     if request.method == 'POST':
         name = str(request.form["name"])
-        api_key = secrets.token_hex(32)
-        db.session.add(Leaderboard(id=random.randrange(-100000, 100000), name=name, data="", api_key=str(api_key), scores=""))
-        db.session.commit()
-        return f"Your api key is {api_key}"
+        led = Leaderboard.query.filter_by(name=name).first()
+        if led:
+            return "This leaderboard already exists!"
+        else:
+            api_key = secrets.token_hex(32)
+            db.session.add(Leaderboard(id=random.randrange(-100000, 100000), name=name, data="", api_key=str(api_key), scores=""))
+            db.session.commit()
+            return f"Your api key is {api_key}"
 
 
 @app.route('/add', methods=["POST"])
@@ -47,6 +54,7 @@ def landing_page():
         leaderboard.scores += ","
 
         db.session.commit()
+
         return "<Response [200]>"
 
 def Reverse(tuples):
